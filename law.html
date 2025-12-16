@@ -1,0 +1,1151 @@
+<html lang="zh-CN" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha&Leader</title>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <!-- Inter for English, Noto Sans SC for Chinese to ensure premium look -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --cursor-size: 20px;
+            --cursor-hover-size: 80px;
+            --accent-color: #3b82f6;
+            /* Blue-500 equivalent */
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            cursor: none;
+            overflow-x: hidden;
+            background-color: #030303;
+            /* Slightly darker than original for high contrast */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .font-heading {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            letter-spacing: -0.02em;
+            /* Tracking tight default for headings */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #030303;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Glass Panel - Linear Style */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Shine Effect */
+        .glass-panel::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Stacked Carousel Logic */
+        .stack-section {
+            --_offset-steps: 3rem;
+            --_scale-steps: 8;
+            --_opacity-steps: 20;
+            --_offset-steps-two: calc(var(--_offset-steps) * -1);
+            --_offset-steps-three: calc(var(--_offset-steps) * -2);
+            --scale-steps-two: calc(1 - var(--_scale-steps) * 0.01);
+            --scale-steps-three: calc(1 - var(--_scale-steps) * 0.02);
+            --opacity-steps-two: calc(1 - var(--_opacity-steps) * 0.02);
+            --opacity-steps-three: calc(1 - var(--_opacity-steps) * 0.04);
+            display: grid;
+            grid-template-areas: "stack";
+            width: min(calc(100% - 2rem), 36rem);
+            margin: 0 auto;
+        }
+
+        .stack-card {
+            grid-area: stack;
+            transition: 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            translate: var(--_offset) 0;
+            order: var(--_order);
+            z-index: var(--_order);
+            scale: var(--_scale);
+            opacity: var(--_opacity);
+            cursor: none;
+            user-select: none;
+            transform-style: preserve-3d;
+            background: #080808;
+            /* Darker card bg */
+        }
+
+        /* Stack Logic Assignments */
+        .stack-card:nth-of-type(1) {
+            --_order: var(--_1-order);
+            --_scale: var(--_1-scale);
+            --_opacity: var(--_1-opacity);
+            --_offset: var(--_1-offset);
+        }
+
+        .stack-card:nth-of-type(2) {
+            --_order: var(--_2-order);
+            --_scale: var(--_2-scale);
+            --_opacity: var(--_2-opacity);
+            --_offset: var(--_2-offset);
+        }
+
+        .stack-card:nth-of-type(3) {
+            --_order: var(--_3-order);
+            --_scale: var(--_3-scale);
+            --_opacity: var(--_3-opacity);
+            --_offset: var(--_3-offset);
+        }
+
+        .stack-card:nth-of-type(4) {
+            --_order: var(--_4-order);
+            --_scale: var(--_4-scale);
+            --_opacity: var(--_4-opacity);
+            --_offset: var(--_4-offset);
+        }
+
+        .stack-section.card-1-active {
+            --_1-order: 4;
+            --_1-scale: 1;
+            --_1-opacity: 1;
+            --_1-offset: 0;
+            --_2-order: 3;
+            --_2-scale: var(--scale-steps-two);
+            --_2-opacity: var(--opacity-steps-two);
+            --_2-offset: var(--_offset-steps-two);
+            --_3-order: 2;
+            --_3-scale: var(--scale-steps-three);
+            --_3-opacity: var(--opacity-steps-three);
+            --_3-offset: var(--_offset-steps-three);
+            --_4-order: 1;
+            --_4-scale: calc(1 - var(--_scale-steps) * 0.03);
+            --_4-opacity: calc(1 - var(--_opacity-steps) * 0.06);
+            --_4-offset: calc(var(--_offset-steps) * -3);
+        }
+
+        .stack-section.card-2-active {
+            --_2-order: 4;
+            --_2-scale: 1;
+            --_2-opacity: 1;
+            --_2-offset: 0;
+            --_3-order: 3;
+            --_3-scale: var(--scale-steps-two);
+            --_3-opacity: var(--opacity-steps-two);
+            --_3-offset: var(--_offset-steps-two);
+            --_4-order: 2;
+            --_4-scale: var(--scale-steps-three);
+            --_4-opacity: var(--opacity-steps-three);
+            --_4-offset: var(--_offset-steps-three);
+            --_1-order: 1;
+            --_1-scale: calc(1 - var(--_scale-steps) * 0.03);
+            --_1-opacity: calc(1 - var(--_opacity-steps) * 0.06);
+            --_1-offset: calc(var(--_offset-steps) * -3);
+        }
+
+        .stack-section.card-3-active {
+            --_3-order: 4;
+            --_3-scale: 1;
+            --_3-opacity: 1;
+            --_3-offset: 0;
+            --_4-order: 3;
+            --_4-scale: var(--scale-steps-two);
+            --_4-opacity: var(--opacity-steps-two);
+            --_4-offset: var(--_offset-steps-two);
+            --_1-order: 2;
+            --_1-scale: var(--scale-steps-three);
+            --_1-opacity: var(--opacity-steps-three);
+            --_1-offset: var(--_offset-steps-three);
+            --_2-order: 1;
+            --_2-scale: calc(1 - var(--_scale-steps) * 0.03);
+            --_2-opacity: calc(1 - var(--_opacity-steps) * 0.06);
+            --_2-offset: calc(var(--_offset-steps) * -3);
+        }
+
+        .stack-section.card-4-active {
+            --_4-order: 4;
+            --_4-scale: 1;
+            --_4-opacity: 1;
+            --_4-offset: 0;
+            --_1-order: 3;
+            --_1-scale: var(--scale-steps-two);
+            --_1-opacity: var(--opacity-steps-two);
+            --_1-offset: var(--_offset-steps-two);
+            --_2-order: 2;
+            --_2-scale: var(--scale-steps-three);
+            --_2-opacity: var(--opacity-steps-three);
+            --_2-offset: var(--_offset-steps-three);
+            --_3-order: 1;
+            --_3-scale: calc(1 - var(--_scale-steps) * 0.03);
+            --_3-opacity: calc(1 - var(--_opacity-steps) * 0.06);
+            --_3-offset: calc(var(--_offset-steps) * -3);
+        }
+
+        /* Ambient Liquid Blobs */
+        .liquid-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+            animation: float 12s infinite alternate cubic-bezier(0.45, 0.05, 0.55, 0.95);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(20px, 40px) scale(1.05);
+            }
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+            mix-blend-mode: exclusion;
+        }
+
+        #cursor.hovered {
+            width: var(--cursor-hover-size);
+            height: var(--cursor-hover-size);
+            opacity: 0.2;
+            background-color: rgba(255, 255, 255, 1);
+            mix-blend-mode: normal;
+        }
+
+        /* Loading Animation */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #030303;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        #preloader.loaded {
+            transform: translateY(-100%);
+        }
+
+        .loader-bar {
+            width: 160px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            transition: width 0.4s ease-out;
+        }
+
+        /* Utilities */
+        .will-change-transform {
+            will-change: transform;
+        }
+
+        .split-line {
+            overflow: hidden;
+            display: block;
+        }
+
+        .split-line span {
+            display: block;
+            transform: translateY(100%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-revealed .split-line span {
+            transform: translateY(0);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Marquee */
+        .marquee-container {
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: scroll 40s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Noise Texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.035;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* Text Gradient */
+        .text-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #a5a5a5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-blue {
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-white selection:bg-blue-500/30 selection:text-blue-100 text-sm antialiased">
+
+    <div id="cursor"></div>
+    <div class="noise-overlay"></div>
+
+    <!-- Background Layer -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+        <!-- Subtle Indigo/Blue Blobs for Legal Trust/Tech -->
+        <div class="liquid-blob bg-indigo-900"
+            style="width: 600px; height: 600px; top: -200px; left: -100px; opacity: 0.3;"></div>
+        <div class="liquid-blob bg-blue-900"
+            style="width: 500px; height: 500px; top: 40%; right: -150px; opacity: 0.2;"></div>
+        <div class="liquid-blob bg-slate-800"
+            style="width: 700px; height: 700px; bottom: -200px; left: 20%; opacity: 0.2;"></div>
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="flex flex-col items-center gap-6">
+            <span class="font-heading tracking-widest text-[10px] uppercase text-white/40"
+                id="loader-text">初始化法律引擎...</span>
+            <div class="loader-bar">
+                <div class="loader-progress" id="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-[60] top-0 transition-all duration-300 py-4">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="glass-panel rounded-full px-5 py-2.5 flex items-center justify-between">
+                <a href="http://localhost:8080/" class="cursor-hover group flex items-center gap-2">
+                    <div
+                        class="w-6 h-6 rounded bg-gradient-to-br from-white to-gray-400 flex items-center justify-center">
+                        <span class="iconify text-black" data-icon="lucide:scale" data-width="14"
+                            data-stroke-width="2.5"></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span
+                            class="font-heading font-semibold text-lg tracking-tight text-white leading-tight">安华理达</span>
+                        <span
+                            class="text-[10px] text-white/40 font-normal tracking-wide leading-tight">Alpha&Leader</span>
+                    </div>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#solutions"
+                        class="cursor-hover text-[11px] font-medium text-white/60 hover:text-white transition-colors">解决方案</a>
+                    <a href="#features"
+                        class="cursor-hover text-[11px] font-medium text-white/60 hover:text-white transition-colors">核心功能</a>
+                    <a href="#cases"
+                        class="cursor-hover text-[11px] font-medium text-white/60 hover:text-white transition-colors">客户案例</a>
+                    <a href="#pricing"
+                        class="cursor-hover text-[11px] font-medium text-white/60 hover:text-white transition-colors">定价</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="window.location.href='http://localhost:8080/#/login'"
+                        class="hidden md:block cursor-hover px-4 py-1.5 rounded-full text-[11px] font-medium text-white/70 hover:text-white transition-colors">登录</button>
+                    <button onclick="window.location.href='http://localhost:8080/#/register'"
+                        class="cursor-hover px-4 py-1.5 bg-white text-black rounded-full text-[11px] font-medium hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+                        免费试用
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header id="hero" class="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 z-0">
+            <!-- Abstract Grid Background -->
+            <div
+                class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)]">
+            </div>
+        </div>
+
+        <div class="relative z-10 text-center px-6 w-full max-w-5xl mx-auto flex flex-col items-center">
+            <div class="reveal mb-6 opacity-0">
+                <div
+                    class="glass-panel inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/20 bg-blue-500/5">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    <span class="text-[11px] font-medium text-blue-100/80 tracking-wide">智能案件管理 · AI辅助决策 ·
+                        法律检索一体化平台</span>
+                </div>
+            </div>
+
+            <h1
+                class="font-heading text-6xl md:text-7xl lg:text-8xl font-medium leading-[1.05] tracking-tight text-white mb-6">
+                <span class="split-line"><span class="block">AI驱动的</span></span>
+                <span class="split-line"><span class="block text-gradient-blue pb-2">法律工作空间</span></span>
+            </h1>
+
+            <p
+                class="mt-4 text-base md:text-lg text-gray-400 font-light max-w-xl mx-auto leading-relaxed reveal opacity-0 delay-200">
+                Alpha&Leader 将复杂的案件管理、法律检索与AI智能分析转化为<span
+                    class="text-white font-medium">高效的工作流</span>。为律所与企业法务部打造的智能化案件管理平台。
+            </p>
+
+            <div class="mt-10 flex flex-col sm:flex-row gap-4 reveal opacity-0 delay-300">
+                <button onclick="window.location.href='http://localhost:8080/#/register'"
+                    class="cursor-hover h-10 px-6 rounded-full bg-white text-black text-xs font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                    立即开始使用 <span class="iconify" data-icon="lucide:arrow-right" data-width="14"></span>
+                </button>
+                <button onclick="window.location.href='http://localhost:8080/#/login'"
+                    class="cursor-hover h-10 px-6 rounded-full glass-panel border border-white/10 text-white/80 text-xs font-medium hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+                    <span class="iconify" data-icon="lucide:log-in" data-width="14"></span> 已有账号登录
+                </button>
+            </div>
+
+            <!-- Dashboard Preview Placeholder -->
+            <div class="mt-16 w-full max-w-4xl relative reveal opacity-0 delay-500 group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
+                </div>
+                <div
+                    class="glass-panel rounded-xl border border-white/10 overflow-hidden aspect-[16/9] relative bg-[#050505]">
+                    <!-- Simulated UI -->
+                    <div class="absolute top-0 w-full h-8 border-b border-white/5 flex items-center px-4 gap-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-red-500/20"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/20"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-green-500/20"></div>
+                    </div>
+                    <div class="absolute top-8 left-0 w-48 h-full border-r border-white/5 p-4 flex flex-col gap-3">
+                        <div class="w-full h-4 bg-white/10 rounded animate-pulse"></div>
+                        <div class="w-3/4 h-3 bg-white/5 rounded"></div>
+                        <div class="w-2/3 h-3 bg-white/5 rounded"></div>
+                    </div>
+                    <div class="absolute top-8 left-48 right-0 bottom-0 p-8 flex gap-6">
+                        <div class="flex-1 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="h-6 w-32 bg-white/10 rounded"></div>
+                                <div class="h-6 w-8 bg-blue-500/20 rounded"></div>
+                            </div>
+                            <div class="h-2 w-full bg-white/5 rounded"></div>
+                            <div class="h-2 w-5/6 bg-white/5 rounded"></div>
+                            <div
+                                class="h-32 w-full bg-white/5 rounded border border-white/5 mt-4 p-4 relative overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 p-2 text-[10px] text-red-400 bg-red-400/10 rounded-bl">
+                                    高风险条款检测</div>
+                            </div>
+                        </div>
+                        <div class="w-1/3 h-full border-l border-white/5 pl-6 space-y-3">
+                            <div class="h-4 w-20 bg-white/10 rounded"></div>
+                            <div
+                                class="h-20 w-full bg-gradient-to-br from-blue-500/10 to-transparent rounded border border-blue-500/10">
+                            </div>
+                            <div class="h-20 w-full bg-white/5 rounded border border-white/5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Partners / Trust -->
+    <section class="py-12 border-y border-white/5 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="text-center text-[10px] uppercase tracking-widest text-white/30 mb-8 font-medium">深受律所与企业法务部信赖
+            </p>
+            <div class="marquee-container overflow-hidden w-full">
+                <div class="marquee-content gap-20 items-center opacity-40 grayscale">
+                    <span class="text-lg font-heading font-semibold text-white">KING &amp; WOOD</span>
+                    <span class="text-lg font-heading font-semibold text-white">JUNHE</span>
+                    <span class="text-lg font-heading font-semibold text-white">ZHONG LUN</span>
+                    <span class="text-lg font-heading font-semibold text-white">TENCENT</span>
+                    <span class="text-lg font-heading font-semibold text-white">ALIBABA</span>
+                    <span class="text-lg font-heading font-semibold text-white">BYD</span>
+                    <span class="text-lg font-heading font-semibold text-white">FANGDA</span>
+                    <span class="text-lg font-heading font-semibold text-white">KING &amp; WOOD</span>
+                    <span class="text-lg font-heading font-semibold text-white">JUNHE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions / Features Tabbed Grid -->
+    <section id="features" class="py-32 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div class="reveal">
+                    <h2 class="font-heading text-3xl md:text-4xl font-medium tracking-tight mb-3 text-white">
+                        智能化法律平台<br><span class="text-gray-500">全方位AI辅助</span></h2>
+                    <p class="text-gray-400 max-w-sm text-sm">从案件管理到法律检索，AI 助手全程护航。</p>
+                </div>
+
+                <div class="reveal flex p-1 glass-panel rounded-lg" id="service-tabs">
+                    <button data-tab="case-management"
+                        class="tab-btn cursor-hover px-5 py-2 text-[11px] font-medium rounded bg-white/10 text-white shadow-inner transition-all duration-300">案件管理</button>
+                    <button data-tab="ai-analysis"
+                        class="tab-btn cursor-hover px-5 py-2 text-[11px] font-medium rounded text-gray-500 hover:text-white hover:bg-white/5 transition-all duration-300">AI智能分析</button>
+                    <button data-tab="research"
+                        class="tab-btn cursor-hover px-5 py-2 text-[11px] font-medium rounded text-gray-500 hover:text-white hover:bg-white/5 transition-all duration-300">法律检索</button>
+                </div>
+            </div>
+
+            <!-- Grids -->
+            <div id="services-grid-container" class="relative min-h-[400px]">
+
+                <!-- Case Management Grid -->
+                <div id="grid-case-management"
+                    class="service-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="iconify" data-icon="lucide:folder-open" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">案件全生命周期管理</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">从草稿到结案的完整流转，智能跟踪每个案件阶段，确保工作不遭漏。</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="iconify" data-icon="lucide:search" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">多维度筛选搜索</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">按案件类型、状态、阶段、当事人等多个维度快速筛选，瞬间定位目标案件。</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="iconify" data-icon="lucide:file-text" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">证据材料管理</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">统一管理案件相关证据、文书和附件，支持批量上传和分类整理。</p>
+                    </div>
+                </div>
+
+                <!-- AI Analysis Grid (Hidden) -->
+                <div id="grid-ai-analysis"
+                    class="service-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden opacity-0 translate-y-4">
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-400 mb-4">
+                            <span class="iconify" data-icon="lucide:trending-up" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">胜诉率预测</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">基于案件信息和历史数据，智能预测案件走向与胜诉概率，可视化展示。</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-400 mb-4">
+                            <span class="iconify" data-icon="lucide:alert-triangle" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">风险点识别</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">AI自动分析案件材料，识别潜在法律风险点，提供详细风险报告。</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-400 mb-4">
+                            <span class="iconify" data-icon="lucide:lightbulb" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">诉讼策略建议</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">基于案情分析和AI对话，提供专业的诉讼策略建议和证据时间轴。</p>
+                    </div>
+                </div>
+
+                <!-- Research Grid (Hidden) -->
+                <div id="grid-research"
+                    class="service-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden opacity-0 translate-y-4">
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 mb-4">
+                            <span class="iconify" data-icon="lucide:brain-circuit" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">类案检索</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">自然语言提问，AI 从海量裁判文书中挖掘相似案例，提取裁判要旨。</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 rounded-xl cursor-hover group border border-white/5 hover:border-blue-500/30">
+                        <div
+                            class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 mb-4">
+                            <span class="iconify" data-icon="lucide:bar-chart-2" data-width="20"></span>
+                        </div>
+                        <h3 class="font-heading text-lg font-medium mb-2 text-white">胜诉率分析</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">基于大数据模型预测案件走向与胜诉概率，辅助制定诉讼策略。</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies / Work Stack Section -->
+    <section id="cases" class="py-32 relative overflow-hidden z-10 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto px-6 w-full">
+            <div class="flex flex-col lg:flex-row gap-16 items-center justify-between">
+
+                <!-- Content -->
+                <div class="flex-1 max-w-lg reveal">
+                    <span
+                        class="text-[10px] uppercase tracking-widest text-blue-400 mb-4 block font-semibold">客户成功案例</span>
+                    <h2
+                        class="font-heading text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight mb-6 text-white">
+                        降本增效的<br>
+                        <span class="text-gray-500">实战验证</span>
+                    </h2>
+                    <p class="text-base text-gray-400 leading-relaxed mb-8">
+                        看看安华理达如何帮助顶尖团队突破效率瓶颈，将律师从重复性劳动中解放出来。
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-6 mb-10">
+                        <div>
+                            <span class="block text-3xl font-heading font-semibold text-white mb-1">40%</span>
+                            <span class="text-xs text-gray-500">审查时间缩短</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-heading font-semibold text-white mb-1">Zero</span>
+                            <span class="text-xs text-gray-500">重大合规漏判</span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button class="nav-dot w-2.5 h-2.5 rounded-full bg-blue-500 transition-all cursor-hover"
+                            onclick="setActiveCard(1)"></button>
+                        <button
+                            class="nav-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition-all cursor-hover"
+                            onclick="setActiveCard(2)"></button>
+                        <button
+                            class="nav-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition-all cursor-hover"
+                            onclick="setActiveCard(3)"></button>
+                    </div>
+                </div>
+
+                <!-- 3D Stack -->
+                <div class="flex flex-col items-center w-full lg:w-auto reveal delay-200">
+                    <div id="cards-container" class="stack-section card-1-active relative perspective-[1000px]">
+
+                        <!-- Card 1 -->
+                        <div
+                            class="stack-card glass-panel rounded-2xl h-[28rem] w-full border border-white/10 relative overflow-hidden group bg-[#0a0a0a]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-blue-900/10 to-transparent"></div>
+                            <div class="relative z-10 p-8 flex flex-col h-full">
+                                <div class="flex justify-between items-center mb-8">
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="w-8 h-8 rounded bg-white flex items-center justify-center text-black font-bold text-xs">
+                                            华</div>
+                                        <span class="text-xs font-semibold uppercase tracking-wider text-white">华安
+                                            律所</span>
+                                    </div>
+                                    <span
+                                        class="text-[10px] text-gray-500 border border-white/10 px-2 py-1 rounded">案件管理
+                                    </span>
+                                </div>
+                                <h3 class="text-2xl font-heading font-medium text-white mb-4">案件管理效率提升 3 倍</h3>
+                                <p class="text-sm text-gray-400 mb-auto leading-relaxed">
+                                    "引入 Alpha&Leader 后，我们的案件管理效率显著提升。智能检索和多维度筛选让我们能快速定位目标案件，大大节省了时间。"
+                                </p>
+                                <div class="border-t border-white/10 pt-6 mt-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-gray-700"></div>
+                                        <div>
+                                            <p class="text-xs text-white font-medium">张伟</p>
+                                            <p class="text-[10px] text-gray-500">高级合伙人</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div
+                            class="stack-card glass-panel rounded-2xl h-[28rem] w-full border border-white/10 relative overflow-hidden group bg-[#0a0a0a]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/10 to-transparent"></div>
+                            <div class="relative z-10 p-8 flex flex-col h-full">
+                                <div class="flex justify-between items-center mb-8">
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="w-8 h-8 rounded bg-emerald-500 flex items-center justify-center text-white font-bold text-xs">
+                                            T</div>
+                                        <span class="text-xs font-semibold uppercase tracking-wider text-white">科技
+                                            公司</span>
+                                    </div>
+                                    <span
+                                        class="text-[10px] text-gray-500 border border-white/10 px-2 py-1 rounded">法务数字化</span>
+                                </div>
+                                <h3 class="text-2xl font-heading font-medium text-white mb-4">AI辅助决策提升准确性</h3>
+                                <p class="text-sm text-gray-400 mb-auto leading-relaxed">
+                                    "引入 Alpha&Leader 后，我们的案件风险评估准确率显著提高。AI智能分析功能为我们提供了客观的胜诉率预测，大大提升了决策效率。"
+                                </p>
+                                <div class="border-t border-white/10 pt-6 mt-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-gray-700"></div>
+                                        <div>
+                                            <p class="text-xs text-white font-medium">李琳</p>
+                                            <p class="text-[10px] text-gray-500">法务总监</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div
+                            class="stack-card glass-panel rounded-2xl h-[28rem] w-full border border-white/10 relative overflow-hidden group bg-[#0a0a0a]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-purple-900/10 to-transparent"></div>
+                            <div class="relative z-10 p-8 flex flex-col h-full">
+                                <div class="flex justify-between items-center mb-8">
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="w-8 h-8 rounded bg-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                                            法</div>
+                                        <span class="text-xs font-semibold uppercase tracking-wider text-white">法律
+                                            服务机构</span>
+                                    </div>
+                                    <span
+                                        class="text-[10px] text-gray-500 border border-white/10 px-2 py-1 rounded">法律检索</span>
+                                </div>
+                                <h3 class="text-2xl font-heading font-medium text-white mb-4">法律检索效率翻倍</h3>
+                                <p class="text-sm text-gray-400 mb-auto leading-relaxed">
+                                    "Alpha&Leader 的法律检索功能非常强大，从海量案例和法规中快速找到相关内容，检索效率提升了一倍不止。"
+                                </p>
+                                <div class="border-t border-white/10 pt-6 mt-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-gray-700"></div>
+                                        <div>
+                                            <p class="text-xs text-white font-medium">王强</p>
+                                            <p class="text-[10px] text-gray-500">首席律师</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UI Gallery / Bento Grid -->
+    <section class="py-32 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-12 reveal text-center">
+                <h2 class="font-heading text-3xl md:text-4xl font-medium tracking-tight mb-4 text-white">直观的<span
+                        class="text-gray-500">人机协作</span></h2>
+                <p class="text-gray-400">像与资深律师对话一样简单。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[600px]">
+
+                <!-- Main Feature: Chat -->
+                <div
+                    class="md:col-span-2 md:row-span-2 glass-panel rounded-xl p-6 relative overflow-hidden group border border-white/5">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent"></div>
+                    <div class="relative z-10 h-full flex flex-col">
+                        <div class="flex items-center gap-2 mb-6">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            <span class="text-xs font-medium text-white/70">AI 法律顾问 (在线)</span>
+                        </div>
+                        <div class="space-y-4 flex-1 overflow-hidden opacity-80">
+                            <div class="flex gap-3">
+                                <div
+                                    class="bg-white/10 p-3 rounded-lg rounded-tl-none text-xs text-gray-300 max-w-[80%]">
+                                    请帮我审核这份劳动合同中的竞业禁止条款是否合法。
+                                </div>
+                            </div>
+                            <div class="flex gap-3 flex-row-reverse">
+                                <div
+                                    class="bg-blue-600/20 border border-blue-500/20 p-3 rounded-lg rounded-tr-none text-xs text-white max-w-[90%]">
+                                    <p class="mb-2">根据《劳动合同法》及相关司法解释，该条款存在以下风险：</p>
+                                    <ul class="list-disc list-inside space-y-1 text-blue-100/70">
+                                        <li>补偿金标准未明确，建议约定不低于月工资的30%。</li>
+                                        <li>限制范围过于宽泛，建议限定在同类业务。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div
+                                    class="bg-white/10 p-3 rounded-lg rounded-tl-none text-xs text-gray-300 max-w-[80%] animate-pulse">
+                                    正在生成修改建议...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Knowledge Graph -->
+                <div
+                    class="md:col-span-1 md:row-span-1 glass-panel rounded-xl p-5 relative overflow-hidden group border border-white/5 flex flex-col justify-between">
+                    <span class="iconify text-purple-400 mb-2" data-icon="lucide:share-2" data-width="24"></span>
+                    <div>
+                        <h4 class="text-white font-medium mb-1">知识图谱</h4>
+                        <p class="text-[10px] text-gray-400">可视化展示案情关联方与法律关系。</p>
+                    </div>
+                    <div
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-20 group-hover:opacity-40 transition-opacity">
+                        <span class="iconify" data-icon="lucide:share-2" data-width="120"></span>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Analytics -->
+                <div
+                    class="md:col-span-1 md:row-span-1 glass-panel rounded-xl p-5 relative overflow-hidden group border border-white/5 bg-gray-900">
+                    <span class="iconify text-emerald-400 mb-2" data-icon="lucide:pie-chart" data-width="24"></span>
+                    <div>
+                        <h4 class="text-white font-medium mb-1">数据看板</h4>
+                        <p class="text-[10px] text-gray-400">合同履行状态与法务人效统计。</p>
+                    </div>
+                    <!-- CSS Bar Chart -->
+                    <div class="absolute bottom-4 right-4 flex items-end gap-1 h-12">
+                        <div
+                            class="w-1.5 bg-gray-700 h-[40%] rounded-t group-hover:h-[60%] transition-all duration-500">
+                        </div>
+                        <div
+                            class="w-1.5 bg-gray-600 h-[70%] rounded-t group-hover:h-[80%] transition-all duration-500 delay-75">
+                        </div>
+                        <div
+                            class="w-1.5 bg-emerald-500 h-[50%] rounded-t group-hover:h-[90%] transition-all duration-500 delay-150">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Mobile/Integrations -->
+                <div
+                    class="md:col-span-2 md:row-span-1 glass-panel rounded-xl p-6 relative overflow-hidden group border border-white/5 flex items-center justify-between">
+                    <div class="z-10">
+                        <h4 class="text-lg text-white font-medium mb-2">多端协同</h4>
+                        <p class="text-xs text-gray-400 max-w-xs">支持网页端、微信小程序及企业微信/钉钉集成，随时随地处理法务需求。</p>
+                    </div>
+                    <div class="flex gap-4 opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <span class="iconify text-white" data-icon="lucide:monitor" data-width="32"></span>
+                        <span class="iconify text-white" data-icon="lucide:smartphone" data-width="32"></span>
+                        <span class="iconify text-white" data-icon="lucide:slack" data-width="32"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-32 relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-heading text-3xl font-medium mb-4 text-white">灵活的<span class="text-gray-500">订阅方案</span>
+                </h2>
+                <p class="text-gray-400 text-sm">适合个人律师到大型法务团队。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Solo -->
+                <div
+                    class="glass-panel p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all duration-300">
+                    <h3 class="text-lg font-medium text-white mb-2">个人版</h3>
+                    <p class="text-xs text-gray-500 mb-6">适合独立律师或自由职业者</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-3xl font-bold text-white">¥199</span>
+                        <span class="text-xs text-gray-500">/ 月</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> 每月 50 份合同审查</li>
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> 基础法规检索</li>
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> 标准合同模板库</li>
+                    </ul>
+                    <button
+                        class="w-full py-2.5 rounded-lg bg-white/5 hover:bg-white hover:text-black text-white text-xs font-medium transition-colors leading-tight">开始使用</button>
+                </div>
+
+                <!-- Team (Featured) -->
+                <div class="glass-panel p-8 rounded-2xl border border-blue-500/30 bg-blue-900/5 relative">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">推荐</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-white mb-2">团队版</h3>
+                    <p class="text-xs text-gray-500 mb-6">适合中小型律所或法务团队</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-3xl font-bold text-white">¥999</span>
+                        <span class="text-xs text-gray-500">/ 月</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-white"><span class="iconify text-blue-400"
+                                data-icon="lucide:check"></span> 无限次合同审查</li>
+                        <li class="flex items-center gap-3 text-xs text-white"><span class="iconify text-blue-400"
+                                data-icon="lucide:check"></span> 团队协作与权限管理</li>
+                        <li class="flex items-center gap-3 text-xs text-white"><span class="iconify text-blue-400"
+                                data-icon="lucide:check"></span> 高级风险雷达</li>
+                        <li class="flex items-center gap-3 text-xs text-white"><span class="iconify text-blue-400"
+                                data-icon="lucide:check"></span> 专属客户经理</li>
+                    </ul>
+                    <button
+                        class="w-full py-2.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] leading-tight">免费试用
+                        14 天</button>
+                </div>
+
+                <!-- Enterprise -->
+                <div
+                    class="glass-panel p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all duration-300">
+                    <h3 class="text-lg font-medium text-white mb-2">企业版</h3>
+                    <p class="text-xs text-gray-500 mb-6">适合大型组织与定制化需求</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-3xl font-bold text-white">定制</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> 私有化部署</li>
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> API 接口集成</li>
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> 定制训练专属模型</li>
+                        <li class="flex items-center gap-3 text-xs text-gray-300"><span class="iconify text-white"
+                                data-icon="lucide:check"></span> SLA 服务保障</li>
+                    </ul>
+                    <button
+                        class="w-full py-2.5 rounded-lg border border-white/10 text-white text-xs font-medium hover:bg-white hover:text-black transition-colors">联系销售</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-white/5 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-600">
+                <p>© 2025 安华理达（Alpha&Leader）. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">服务条款</a>
+                    <a href="#" class="hover:text-white transition-colors">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const hoverElements = document.querySelectorAll('.cursor-hover');
+
+        document.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+        });
+
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Preloader
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('loader-progress');
+            const preloader = document.getElementById('preloader');
+
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 20;
+                if (width > 100) width = 100;
+                progress.style.width = width + '%';
+
+                if (width === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        preloader.classList.add('loaded');
+                        document.querySelector('#hero').classList.add('hero-revealed');
+                        revealOnScroll(); // Trigger initial check
+                    }, 500);
+                }
+            }, 100);
+        });
+
+        // Reveal on Scroll
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            const elementVisible = 50;
+
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+
+        // Tabs Logic
+        const tabs = document.querySelectorAll('.tab-btn');
+        const grids = document.querySelectorAll('.service-grid');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // UI Update
+                tabs.forEach(t => {
+                    t.className = 'tab-btn cursor-hover px-5 py-2 text-[11px] font-medium rounded text-gray-500 hover:text-white hover:bg-white/5 transition-all duration-300';
+                });
+                tab.className = 'tab-btn cursor-hover px-5 py-2 text-[11px] font-medium rounded bg-white/10 text-white shadow-inner transition-all duration-300';
+
+                // Content Update
+                const targetId = `grid-${tab.getAttribute('data-tab')}`;
+                grids.forEach(grid => {
+                    if (grid.id === targetId) {
+                        grid.classList.remove('hidden');
+                        setTimeout(() => grid.classList.remove('opacity-0', 'translate-y-4'), 50);
+                    } else {
+                        grid.classList.add('opacity-0', 'translate-y-4');
+                        setTimeout(() => grid.classList.add('hidden'), 300);
+                    }
+                });
+            });
+        });
+
+        // Stack Carousel Logic
+        const cardsContainer = document.getElementById('cards-container');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentCard = 1;
+
+        function setActiveCard(index) {
+            if (!cardsContainer) return;
+            currentCard = index;
+
+            // Update container class
+            cardsContainer.className = `stack-section card-${index}-active relative perspective-[1000px]`;
+
+            // Update dots
+            dots.forEach((dot, i) => {
+                if (i + 1 === index) {
+                    dot.classList.remove('bg-white/20');
+                    dot.classList.add('bg-blue-500');
+                } else {
+                    dot.classList.add('bg-white/20');
+                    dot.classList.remove('bg-blue-500');
+                }
+            });
+        }
+
+        // Auto rotate carousel
+        setInterval(() => {
+            let next = currentCard + 1;
+            if (next > 3) next = 1;
+            setActiveCard(next);
+        }, 5000);
+
+    </script>
+
+</body>
+
+</html>
